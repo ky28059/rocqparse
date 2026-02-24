@@ -1,4 +1,4 @@
 (executable
  (public_name rocqparse)
  (name main)
- (libraries rocqparse))
+ (libraries rocqparse rocq-runtime.engine rocq-runtime.vernac))
