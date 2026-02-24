@@ -1,0 +1,4 @@
+(executable
+ (public_name rocqparse)
+ (name main)
+ (libraries rocqparse))
