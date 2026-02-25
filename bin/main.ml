@@ -1,4 +1,4 @@
-open Parse
+open Rocqparse
 
 let () =
   init_rocq_env ();

@@ -1,2 +1,9 @@
 (library
- (name rocqparse))
+ (name rocqparse)
+ (modules rocqparse parser front init layout)
+ (libraries
+  rocq-runtime.engine
+  rocq-runtime.vernac
+  coq-core.toplevel
+  coq-core.library
+  coq-core.plugins.ltac))
