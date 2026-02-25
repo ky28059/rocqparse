@@ -1,9 +1,10 @@
 (library
  (public_name rocqparse.parse)
  (name parse)
- (modules parse parser front init)
+ (modules parse parser front init layout)
  (libraries
   rocq-runtime.engine
   rocq-runtime.vernac
   coq-core.toplevel
-  coq-core.library))
+  coq-core.library
+  coq-core.plugins.ltac))

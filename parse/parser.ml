@@ -1,7 +1,9 @@
-let rec parse_all_ast parsable acc =
-  try
-    let ast_node = Procq.Entry.parse (Pvernac.main_entry None) parsable in
-    parse_all_ast parsable (ast_node :: acc)
-  with
-  | Gramlib.Stream.Failure -> List.rev acc (* EOF *)
-  | e -> raise e
+let parse_all_ast parsable =
+  (* let mode = Ltac_plugin.G_ltac.classic_proof_mode in *)
+  let entry = Pvernac.main_entry None in
+  let rec f parser =
+    match Procq.Entry.parse entry parser with
+    | None -> []
+    | Some ast -> ast :: f parser
+  in
+  f parsable
