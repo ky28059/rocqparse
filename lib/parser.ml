@@ -1,11 +1,13 @@
 let parse_all_ast parsable =
   print_endline "parsing ast from parsable";
-  (* let mode = Ltac_plugin.G_ltac.classic_proof_mode in *)
-  let entry = Pvernac.main_entry None in
   let rec f parser =
     print_endline "parsing!";
+    let mode = Synterp.get_default_proof_mode () in
+    let entry = Pvernac.main_entry (Some mode) in
     match Procq.Entry.parse entry parser with
     | None -> []
-    | Some ast -> ast :: f parser
+    | Some ast ->
+      let _ = Synterp.synterp_control ~intern:Vernacinterp.fs_intern ast in
+      ast :: f parser
   in
   f parsable
