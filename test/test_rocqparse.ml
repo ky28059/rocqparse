@@ -23,14 +23,12 @@ let test_parse_proof_complex () =
   Qed.
   |}
 
-let () =
-  Rocqparse.init_rocq_env ();
-  Alcotest.run "Parse" [
-    "parse", [
-      test_case "Simple" `Quick test_parse_simple;
-      test_case "Simple proof" `Quick test_parse_simple_proof;
-      test_case "Notation proof" `Quick test_parse_notation_proof;
-      test_case "Notation proof 2" `Quick test_parse_notation_proof2;
-      test_case "Complex proof" `Quick test_parse_proof_complex;
-    ]
+let () = Alcotest.run "Parse" [
+  "parse", [
+    test_case "Simple" `Quick test_parse_simple;
+    test_case "Simple proof" `Quick test_parse_simple_proof;
+    test_case "Notation proof" `Quick test_parse_notation_proof;
+    test_case "Notation proof 2" `Quick test_parse_notation_proof2;
+    test_case "Complex proof" `Quick test_parse_proof_complex;
   ]
+]
