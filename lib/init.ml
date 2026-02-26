@@ -1,5 +1,5 @@
 let init_rocq_env () =
-  Unix.putenv "OCAMLFIND_CONF" "/dev/null";
+  Unix.putenv "OCAMLFIND_CONF" "/dev/null"; (* Hack to prevent "Config file not found" *)
   Coqinit.init_ocaml ();
 
   let opts, _ = Coqargs.parse_args ~init:Coqargs.default [] in

@@ -1,7 +1,5 @@
 let parse_all_ast parsable =
-  print_endline "parsing ast from parsable";
   let rec f parser =
-    print_endline "parsing!";
     let mode = Synterp.get_default_proof_mode () in
     let entry = Pvernac.main_entry (Some mode) in
     match Procq.Entry.parse entry parser with
