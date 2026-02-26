@@ -17,7 +17,23 @@ let layout_qualid (q : qualid) =
 let layout_ident_decl (lid, _l) =
   "(" ^ layout_lident lid ^ ", ...)"
 
-let layout_constr_expr (c : constr_expr) =
+let layout_prim_token p =
+  match p with
+  | Number n -> NumTok.Signed.sprint n
+  | String s -> s
+
+let layout_notation_entry e =
+  match e with
+  | InConstrEntry -> "InConstrEntry"
+  | InCustomEntry s -> "(InCustomEntry \"" ^ s ^ "\")"
+
+let layout_notation (e, n) =
+  "(" ^ layout_notation_entry e ^ ", \"" ^ n ^ "\")"
+
+let rec layout_constr_expr (c : constr_expr) =
+  let layout_constr_notation_subst (s, _, _, _) =
+    let p = String.concat ", " @@ List.map layout_constr_expr s in
+    "([" ^ p ^ "], ..., ..., ...)" in
   match c.v with
   | CRef (q, _) -> "(CRef (" ^ layout_qualid q ^ ", ...))"
   | CFix _ -> "(CFix ...)"
@@ -39,9 +55,9 @@ let layout_constr_expr (c : constr_expr) =
   | CEvar _ -> "(CEvar ...)"
   | CSort _ -> "(CSort ...)"
   | CCast _ -> "(CCast ...)"
-  | CNotation _ -> "(CNotation ...)"
+  | CNotation (_, n, s) -> "(CNotation (..., " ^ layout_notation n ^ ", " ^ layout_constr_notation_subst s ^ "))"
   | CGeneralization _ -> "(CGeneralization ...)"
-  | CPrim _ -> "(CPrim ...)"
+  | CPrim p -> "(CPrim " ^ layout_prim_token p ^ ")"
   | CDelimiters _ -> "(CDelimiters ...)"
   | CArray _ -> "(CArray ...)"
 
