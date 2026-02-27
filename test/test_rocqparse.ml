@@ -1,6 +1,6 @@
 open Alcotest
 
-let print = List.iter @@ fun x -> print_endline @@ Rocqparse.layout_vernac x
+let print = List.iter @@ fun x -> print_endline @@ Rocqparse.string_of_vernac x
 
 
 let test_parse_simple () =

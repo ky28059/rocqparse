@@ -5,7 +5,7 @@ let () =
   let ast = parse_str code in
 
   print_endline "Pretty-printed:\n";
-  List.iter (fun x -> print_endline @@ layout_vernac x) ast;
+  List.iter (fun x -> print_endline @@ string_of_vernac x) ast;
 
   print_endline "\nVernac AST:\n";
-  List.iter (fun x -> print_endline @@ layout_vernac_ast x) ast;
+  List.iter (fun x -> print_endline @@ string_of_vernac_ast x) ast;
