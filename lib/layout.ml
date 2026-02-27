@@ -1,7 +1,6 @@
 open Vernacexpr
 open Decls
 open Constrexpr
-open Proof_bullet
 open Names
 open Libnames
 
@@ -52,7 +51,7 @@ let rec layout_constr_expr (c : constr_expr) =
   | CLetIn _ -> "(CLetIn ...)"
   | CAppExpl _ -> "(CAppExpl ...)"
   | CApp (f, args) ->
-    let s = String.concat ", " @@ List.map (fun (c, _) -> "(" ^ layout_constr_expr c ^ ", ...)") args in
+    let s = String.concat ", " @@ List.map (fun (c, _) -> spf "(%s, ...)" @@ layout_constr_expr c) args in
     spf "(CApp (%s, [%s]))" (layout_constr_expr f) s
   | CProj _ -> "(CProj ...)"
   | CRecord _ -> "(CRecord ...)"
@@ -92,7 +91,13 @@ let layout_assumption_kind t =
   | Conjectural -> "Conjecture"
   | Context -> "Context"
 
+let layout_discharge d =
+  match d with
+  | DoDischarge -> "DoDischarge"
+  | NoDischarge -> "NoDischarge"
+
 let layout_bullet b =
+  let open Proof_bullet in
   match b with
   | Dash n -> "(Dash " ^ string_of_int n ^ ")"
   | Star n -> "(Star " ^ string_of_int n ^ ")"
@@ -100,6 +105,14 @@ let layout_bullet b =
 
 let layout_pure p =
   match p with
+  | VernacOpenCloseScope (b, name) -> spf "(VernacOpenCloseScope (%b, \"%s\"))" b name
+  | VernacDeclareScope name -> spf "(VernacDeclareScope \"%s\")" name
+  | VernacAssumption ((dis, kind), _, ls) ->
+    let s = String.concat ", " @@ List.map (fun (_, (_, e)) -> spf "(..., (..., %s))" @@ layout_constr_expr e) ls in
+    spf "(VernacAssumption ((%s, %s), ..., [%s]))"
+      (layout_discharge dis)
+      (layout_assumption_kind kind)
+      s
   (* | VernacFixpoint _ -> "" *)
   | VernacStartTheoremProof (kind, e) ->
     let p = String.concat ", " @@ List.map layout_proof_expr e in
@@ -114,7 +127,7 @@ let layout_pure p =
   | VernacEndProof (Proved (Opaque, None)) -> "(VernacEndProof (Proved (Opaque, None))) (* Qed *)"
   | VernacEndProof (Proved (Opaque, Some l)) -> spf "(VernacEndProof (Proved (Opaque, Some %s)))" @@ layout_lident l
   | VernacBullet b -> spf "(VernacBullet %s)" @@ layout_bullet b
-  | _ -> "unknown_pure"
+  | _ -> "(...)"
 
 let layout_synterp p =
   match p with
