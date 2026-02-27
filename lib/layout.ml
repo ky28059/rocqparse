@@ -9,10 +9,10 @@ let layout_vernac v =
   Pp.string_of_ppcmds @@ Ppvernac.pr_vernac v
 
 let layout_lident (l : lident) =
-  Id.to_string l.v
+  "\"" ^ Id.to_string l.v ^ "\""
 
 let layout_qualid (q : qualid) =
-  Id.to_string @@ qualid_basename q
+  "\"" ^ (Id.to_string @@ qualid_basename q) ^ "\""
 
 let layout_ident_decl (lid, _l) =
   "(" ^ layout_lident lid ^ ", ...)"
@@ -98,10 +98,37 @@ let layout_pure p =
   | VernacBullet b -> "(VernacBullet " ^ layout_bullet b ^ ")"
   | _ -> "unknown_pure"
 
+let layout_synterp p =
+  match p with
+  | VernacLoad (_, s) -> "(VernacLoad (..., \"" ^ s ^ "\"))"
+  | VernacReservedNotation (_, _) -> "(VernacReservedNotation ...)"
+  | VernacNotation (_, _) -> "(VernacNotation ...)"
+  | VernacDeclareCustomEntry s -> "(VernacDeclareCustomEntry \"" ^ s ^ "\")"
+  | VernacBeginSection l -> "(VernacBeginSection " ^ layout_lident l ^ ")"
+  | VernacEndSegment l -> "(VernacEndSegment " ^ layout_lident l ^ ")"
+  | VernacRequire (i, _, _) ->
+    let s = match i with
+    | Some q -> "(Some " ^ layout_qualid q ^ ")"
+    | None -> "None"
+    in "(VernacRequire (" ^ s ^ ", ..., ...)"
+  | VernacImport (_, _) -> "(VernacImport ...)"
+  | VernacDeclareModule (_, l, _, _) -> "(VernacDeclareModule (..., " ^ layout_lident l ^ ", ..., ...))"
+  | VernacDefineModule (_, l, _, _, _) -> "(VernacDefineModule (..., " ^ layout_lident l ^ ", ..., ..., ...)"
+  | VernacDeclareModuleType (l, _, _, _) -> "(VernacDeclareModuleType (" ^ layout_lident l ^ ", ..., ..., ...)"
+  | VernacInclude _ -> "(VernacInclude ...)"
+  | VernacDeclareMLModule ls ->
+    let s = String.concat ", " ls in "(VernacDeclareMLModule [" ^ s ^ "])"
+  | VernacChdir None -> "(VernacChdir None)"
+  | VernacChdir (Some s) -> "(VernacChdir (Some \"" ^ s ^ "\"))"
+  | VernacExtraDependency (id, s, _) -> "(VernacExtraDependency (" ^ layout_qualid id ^ ", \"" ^ s ^ "\", ...))"
+  | VernacSetOption (b, _, _) -> "(VernacSetOption (" ^ string_of_bool b ^ ", ..., ...))"
+  | VernacProofMode s -> "(VernacProofMode \"" ^ s ^ "\")"
+  | VernacExtend (_, _) -> "(VernacExtend ...)"
+
 let layout_expr expr =
   match expr with
   | VernacSynPure p -> "(VernacSynPure " ^ layout_pure p ^ ")"
-  | VernacSynterp _ -> "unknown_synterp"
+  | VernacSynterp p -> "(VernacSynterp " ^ layout_synterp p ^ ")"
 
 let layout_vernac_ast ({ v = { expr; _ }; _ } : vernac_control) =
   layout_expr expr
