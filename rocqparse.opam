@@ -10,8 +10,9 @@ homepage: "https://github.com/ky28059/rocqparse"
 doc: "https://url/to/documentation"
 bug-reports: "https://github.com/ky28059/rocqparse/issues"
 depends: [
-  "dune" {>= "3.19"}
   "ocaml"
+  "dune" {>= "3.19"}
+  "rocq-runtime" {>= "9.0.1"}
   "odoc" {with-doc}
 ]
 build: [

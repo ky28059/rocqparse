@@ -1,5 +1,5 @@
 # rocqparse
-A simple Rocq AST parser / explorer for Rocq >= 9.0.0, built using the `rocq-runtime` / `coq-core` syntax parser.
+A simple Rocq AST parser / explorer for Rocq >= 9.0.0, built using the `rocq-runtime` syntax parser.
 
 ```bash
 dune exec ./bin/main.exe "Module Axioms. Lemma foo : 1 = 1. Proof. reflexivity. Qed. End Axioms."
